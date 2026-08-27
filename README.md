@@ -9,6 +9,28 @@
 
 ## Getting started
 
+### Prerequisites
+
+- **V compiler** — the project compiles V code with `v -shared`, so you need a [Vlang](https://vlang.io) installation and the `v` binary must be available in your `PATH`.
+  - On Windows, add the directory containing `v.exe` to your `PATH`, for example:
+    - Git Bash:
+      ```bash
+      export PATH="/c/vlang:$PATH"
+      ```
+    - PowerShell:
+      ```powershell
+      $env:PATH = "C:\vlang;" + $env:PATH
+      ```
+    - CMD:
+      ```cmd
+      setx PATH "C:\vlang;%PATH%"
+      ```
+  - On Linux/macOS:
+    ```bash
+    export PATH="$HOME/v:$PATH"
+    ```
+  - To verify, run `v version` — it should print the V version instead of "command not found".
+
 Install dependencies:
 
 ```bash

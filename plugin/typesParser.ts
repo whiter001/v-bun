@@ -18,6 +18,12 @@ V types:
     voidptr // this one is mostly used for [C interoperability](#v-and-c)
 
     any // similar to C's void* and Go's interface{}
+
+Note: V `string` is intentionally NOT supported here. It is a 16-byte struct
+`{&u8 str; int len; int is_lit}` (on x64), so mapping it to `FFIType.cstring`
+(char*) makes Bun dereference the struct bytes as a C string, which crashes at
+runtime on Windows x64. Export functions must return `&char` (use `.str`) or
+`voidptr` instead. See PR #1 issue 3.
 */
 
 import { FFIType } from "bun:ffi";
@@ -27,6 +33,12 @@ export function getTypeFromV(type: string) {
         case "bool":
             return FFIType.bool;
         case "string":
+            // V `string` is a 16-byte struct {&u8 str; int len; int is_lit} (x64).
+            // Mapping it to cstring makes FFI dereference the struct bytes as a
+            // C string, causing a segmentation fault at runtime on Windows x64.
+            // Export functions must return &char (s.str) or voidptr instead.
+            throw new Error("V 'string' is a 16-byte struct and cannot be safely mapped to FFIType.cstring on Windows x64; change the V function to return &char (s.str) or voidptr instead");
+        case "&char":
             return FFIType.cstring;
         case "i8":
             return FFIType.int8_t;
